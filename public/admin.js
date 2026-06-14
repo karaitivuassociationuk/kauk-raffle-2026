@@ -121,6 +121,7 @@
       } else if (p.status === "confirmed") {
         actions = `<button class="mini rel" data-act="release" data-id="${p.id}">Release</button>`;
       }
+      actions += `<button class="mini del" data-act="delete" data-id="${p.id}" title="Permanently remove this record">Delete</button>`;
       const wa = (p.phone || "").replace(/[^\d]/g, "");
       const waLink = wa ? `<a class="nochrome-link" href="https://wa.me/${wa}?text=${encodeURIComponent("KAUK Raffle 2026 — re: " + p.ref)}" target="_blank" rel="noopener">WhatsApp</a>` : "";
       return `<tr>
@@ -158,6 +159,14 @@
         if (reason === null) return;
         await api("/api/admin/release", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, reason }) });
         toast("Released");
+      } else if (act === "delete") {
+        const p = cachedPurchases.find(x => x.id === id);
+        const detail = p ? `${p.name} (${p.ref}) — ${p.numbers.length} number${p.numbers.length>1?"s":""}` : id;
+        if (!confirm(`PERMANENTLY DELETE this record?\n\n${detail}\n\nThe purchase will be removed from the database entirely. Any held numbers go back to available. This cannot be undone.\n\nProceed?`)) return;
+        const reason = prompt("Reason for deletion (optional, kept in audit log):", "");
+        if (reason === null) return;
+        await api("/api/admin/delete", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, reason }) });
+        toast("Deleted");
       }
       await loadPurchases();
     } catch (e) { toast(e.message, true); }

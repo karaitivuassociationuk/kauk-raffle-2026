@@ -54,6 +54,7 @@ export default {
       if (path === "/api/admin/purchases" && req.method === "GET") return adminPurchases(env);
       if (path === "/api/admin/confirm" && req.method === "POST") return adminConfirm(req, env, ctx, me.email);
       if (path === "/api/admin/release" && req.method === "POST") return adminRelease(req, env, me.email);
+      if (path === "/api/admin/delete" && req.method === "POST") return adminDeletePurchase(req, env, me.email);
       if (path === "/api/admin/settings" && req.method === "GET") return adminGetSettings(env);
       if (path === "/api/admin/settings" && req.method === "POST") return adminSetSettings(req, env, me.email);
       if (path === "/api/admin/audit" && req.method === "GET") return adminAudit(env);
@@ -287,6 +288,24 @@ async function adminRelease(req: Request, env: Env, who: string) {
     env.DB.prepare(`UPDATE purchases SET status='released', released_at=datetime('now'), released_by=?, notes=COALESCE(notes,'') || CASE WHEN ?='' THEN '' ELSE char(10) || 'Released: ' || ? END WHERE id=?`).bind(who, reason, reason, id)
   ]);
   await audit(env, who, "purchase.released", id, reason || null);
+  return json({ ok: true });
+}
+
+async function adminDeletePurchase(req: Request, env: Env, who: string) {
+  const body = await req.json().catch(() => null) as any;
+  const id = String(body?.id || "");
+  const reason = String(body?.reason || "").slice(0, 500);
+  if (!id) return bad("missing id");
+  const row = await env.DB.prepare(`SELECT id, ref, status FROM purchases WHERE id=?`).bind(id).first<{ id: string; ref: string; status: string }>();
+  if (!row) return bad("not found", 404);
+
+  // Free any held tickets back to available, then cascade-delete the purchase
+  await env.DB.batch([
+    env.DB.prepare(`UPDATE tickets SET status='available', purchase_id=NULL, updated_at=datetime('now') WHERE purchase_id=?`).bind(id),
+    env.DB.prepare(`DELETE FROM purchase_tickets WHERE purchase_id=?`).bind(id),
+    env.DB.prepare(`DELETE FROM purchases WHERE id=?`).bind(id)
+  ]);
+  await audit(env, who, "purchase.deleted", id, JSON.stringify({ ref: row.ref, prev_status: row.status, reason }));
   return json({ ok: true });
 }
 
