@@ -55,14 +55,26 @@
       else if (selected.has(num)) { b.classList.add("selected"); }
     }
     if (stats) {
-      $("stat-av").textContent = stats.available;
-      $("stat-pe").textContent = stats.pending;
-      $("stat-co").textContent = stats.confirmed;
+      const total = stats.available + stats.pending + stats.confirmed;
+      const pct = (n) => {
+        if (!total || !n) return "0%";
+        const p = (n / total) * 100;
+        return p < 1 ? p.toFixed(1) + "%" : Math.round(p) + "%";
+      };
+      const set = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+      set("stat-av", stats.available);
+      set("lcAvailable", stats.available);
+      set("lcPending", stats.pending);
+      set("lcSold", stats.confirmed);
+      set("lcAvPct", pct(stats.available) + " open");
+      set("lcPePct", stats.pending ? pct(stats.pending) + " pending" : " ");
+      set("lcSoPct", stats.confirmed ? pct(stats.confirmed) + " sold" : " ");
     }
   }
 
   function toggleCell(num) {
-    if (statusMap[num]) return;
+    const st = statusMap[num];
+    if (st === "pending" || st === "confirmed") return;
     if (selected.has(num)) selected.delete(num); else selected.add(num);
     paintGrid();
     updateSelbar();
@@ -80,8 +92,11 @@
     try {
       const data = await api("/api/board");
       statusMap = data.tickets;
-      // Drop selections that just got taken
-      [...selected].forEach((n) => { if (statusMap[n]) selected.delete(n); });
+      // Drop selections that just got taken (only if pending or confirmed)
+      [...selected].forEach((n) => {
+        const s = statusMap[n];
+        if (s === "pending" || s === "confirmed") selected.delete(n);
+      });
       paintGrid(data.stats);
       updateSelbar();
     } catch (e) { console.warn(e); }

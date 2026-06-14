@@ -12,7 +12,7 @@ if (!pw) {
   process.exit(1);
 }
 
-const ITER = 200_000;
+const ITER = 100_000; // Cloudflare Workers Web Crypto caps PBKDF2 iterations at 100k
 const salt = crypto.getRandomValues(new Uint8Array(16));
 const enc = new TextEncoder();
 

@@ -3,22 +3,6 @@
 
 PRAGMA foreign_keys = ON;
 
--- Tickets: 1..500. Status managed by purchase lifecycle.
-CREATE TABLE IF NOT EXISTS tickets (
-  number       INTEGER PRIMARY KEY CHECK (number BETWEEN 1 AND 500),
-  status       TEXT NOT NULL DEFAULT 'available'
-                 CHECK (status IN ('available','pending','confirmed')),
-  purchase_id  TEXT REFERENCES purchases(id) ON DELETE SET NULL,
-  updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
-);
-
--- Seed 500 tickets (idempotent: INSERT OR IGNORE)
-INSERT OR IGNORE INTO tickets (number)
-  WITH RECURSIVE seq(n) AS (
-    SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n < 500
-  )
-  SELECT n FROM seq;
-
 CREATE TABLE IF NOT EXISTS purchases (
   id           TEXT PRIMARY KEY,
   ref          TEXT NOT NULL UNIQUE,
@@ -39,6 +23,22 @@ CREATE TABLE IF NOT EXISTS purchases (
 );
 CREATE INDEX IF NOT EXISTS idx_purchases_status  ON purchases(status);
 CREATE INDEX IF NOT EXISTS idx_purchases_created ON purchases(created_at);
+
+-- Tickets: 1..500. Status managed by purchase lifecycle.
+CREATE TABLE IF NOT EXISTS tickets (
+  number       INTEGER PRIMARY KEY CHECK (number BETWEEN 1 AND 500),
+  status       TEXT NOT NULL DEFAULT 'available'
+                 CHECK (status IN ('available','pending','confirmed')),
+  purchase_id  TEXT REFERENCES purchases(id) ON DELETE SET NULL,
+  updated_at   TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+-- Seed 500 tickets (idempotent: INSERT OR IGNORE)
+INSERT OR IGNORE INTO tickets (number)
+  WITH RECURSIVE seq(n) AS (
+    SELECT 1 UNION ALL SELECT n+1 FROM seq WHERE n < 500
+  )
+  SELECT n FROM seq;
 
 -- Link table for purchase <-> ticket numbers (one purchase can have many)
 CREATE TABLE IF NOT EXISTS purchase_tickets (

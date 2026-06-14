@@ -27,7 +27,7 @@
     return String(s == null ? "" : s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
   }
 
-  function fmt£(pence) { return "£" + (pence / 100).toFixed(2).replace(/\.00$/, ""); }
+  function fmtGbp(pence) { return "£" + (pence / 100).toFixed(2).replace(/\.00$/, ""); }
 
   // ---- auth ----
   async function tryLogin() {
@@ -93,8 +93,8 @@
     $("aConfirmed").textContent = confirmedCount;
     $("aPending").textContent = pendingCount;
     $("aAvailable").textContent = Math.max(0, 500 - confirmedCount - pendingCount);
-    $("aRaised").textContent = fmt£(confirmedPence);
-    $("aPipeline").textContent = fmt£(pendingPence);
+    $("aRaised").textContent = fmtGbp(confirmedPence);
+    $("aPipeline").textContent = fmtGbp(pendingPence);
   }
 
   function renderPurchases() {
@@ -128,7 +128,7 @@
         <td><b style="color:#fff">${escapeHtml(p.name)}</b><br/>
             <span style="color:var(--ink-dim);font-size:11px">${escapeHtml(p.phone)} ${waLink ? "· " + waLink : ""}<br/>${escapeHtml(p.email)}<br/>${escapeHtml(p.postcode)} · ${escapeHtml(p.channel)}</span></td>
         <td><div class="num-chips">${chips}</div>
-            <span style="color:var(--ink-dim);font-size:11px">${fmt£(p.amount_pence)}</span></td>
+            <span style="color:var(--ink-dim);font-size:11px">${fmtGbp(p.amount_pence)}</span></td>
         <td style="font-size:11px;color:var(--ink-dim);white-space:nowrap;">
           ${escapeHtml(p.created_at || "")}
           ${p.confirmed_at ? `<br/>✓ ${escapeHtml(p.confirmed_at)}<br/>by ${escapeHtml(p.confirmed_by || "")}` : ""}
