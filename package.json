@@ -1,0 +1,20 @@
+{
+  "name": "kauk-raffle-2026",
+  "version": "1.0.0",
+  "private": true,
+  "description": "KAUK Unity Coin Raffle 2026 — Karaitivu Association UK",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:create": "wrangler d1 create kauk_raffle",
+    "db:schema": "wrangler d1 execute kauk_raffle --remote --file=./worker/schema.sql",
+    "db:schema:local": "wrangler d1 execute kauk_raffle --local --file=./worker/schema.sql",
+    "db:seed-admins": "wrangler d1 execute kauk_raffle --remote --file=./worker/seed-admins.sql",
+    "hash-password": "node scripts/hash-password.mjs"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250101.0",
+    "typescript": "^5.4.0",
+    "wrangler": "^3.90.0"
+  }
+}

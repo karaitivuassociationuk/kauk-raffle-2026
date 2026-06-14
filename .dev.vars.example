@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local development. NEVER commit .dev.vars.
+SESSION_SECRET=change-me-to-a-long-random-string-min-32-chars
+RESEND_API_KEY=re_your_key_here
+FROM_EMAIL=raffle@karaitivuassociation.org.uk
+WHATSAPP_TOKEN=
+WHATSAPP_PHONE_ID=

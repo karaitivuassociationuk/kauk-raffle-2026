@@ -1,0 +1,27 @@
+name = "kauk-raffle-2026"
+main = "worker/src/index.ts"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Frontend served from /public, API mounted at /api/*
+[assets]
+directory = "./public"
+binding = "ASSETS"
+not_found_handling = "single-page-application"
+
+# D1 database — fill in database_id after `wrangler d1 create kauk_raffle`
+[[d1_databases]]
+binding = "DB"
+database_name = "kauk_raffle"
+database_id = "REPLACE_AFTER_D1_CREATE"
+
+# Secrets (set via `wrangler secret put NAME`):
+#   SESSION_SECRET    — random 32+ char string for signing session cookies
+#   RESEND_API_KEY    — from resend.com
+#   FROM_EMAIL        — verified sender, e.g. "raffle@karaitivuassociation.org.uk"
+#   WHATSAPP_TOKEN    — Meta WhatsApp Cloud API access token (optional, can defer)
+#   WHATSAPP_PHONE_ID — Meta WhatsApp Cloud API phone number ID (optional)
+
+[vars]
+SITE_NAME = "KAUK Unity Coin Raffle 2026"
+SITE_URL = "https://kauk-raffle-2026.pages.dev"

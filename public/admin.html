@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KAUK Raffle — Organiser Dashboard</title>
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css" />
+<style>
+  .admin-wrap{max-width:1180px;margin:0 auto;padding:18px 14px 80px;}
+  .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;flex-wrap:wrap;}
+  .topbar h1{font-family:'Anton',sans-serif;letter-spacing:1px;font-size:28px;margin:0;}
+  .topbar .who{font-size:12px;color:var(--ink-dim);}
+  .topbar .who b{color:#fff;}
+  .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px;}
+  .tab{background:transparent;border:1px solid var(--panel-edge);color:var(--ink);padding:9px 16px;border-radius:8px;font-weight:600;font-size:13px;cursor:pointer;}
+  .tab.active{background:linear-gradient(180deg,#ffe27a,#e6b422);color:#3a2600;border-color:#8a5a0c;}
+  .stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:18px;}
+  .astat{background:#070c18;border:1px solid var(--panel-edge);border-radius:12px;padding:14px;text-align:center;}
+  .astat .v{font-family:'Anton',sans-serif;font-size:26px;color:#fff;}
+  .astat .k{font-size:10px;letter-spacing:1px;color:var(--ink-dim);text-transform:uppercase;margin-top:2px;}
+  table{width:100%;border-collapse:collapse;font-size:13px;background:#0b1224;border-radius:12px;overflow:hidden;}
+  th{text-align:left;color:var(--ink-dim);font-weight:600;font-size:11px;letter-spacing:1px;text-transform:uppercase;padding:10px;border-bottom:1px solid var(--panel-edge);background:#0e1528;}
+  td{padding:11px 10px;border-bottom:1px solid #131c33;vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  .badge{font-size:10px;font-weight:700;padding:3px 8px;border-radius:999px;letter-spacing:.5px;}
+  .b-pending{background:#3a2a05;color:#ffce5e;}
+  .b-confirmed{background:#0c3d20;color:#7ff0a6;}
+  .b-released{background:#3a1010;color:#ff9d9d;}
+  .mini{font-size:11px;padding:6px 10px;border-radius:7px;border:none;cursor:pointer;font-weight:700;margin-right:4px;}
+  .mini.ok{background:#15803a;color:#fff;}
+  .mini.rel{background:#3a1010;color:#ff9d9d;}
+  .mini.del{background:#3a1010;color:#ff9d9d;}
+  .empty{color:var(--ink-dim);text-align:center;padding:32px;font-size:13px;}
+  .filterbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;align-items:center;}
+  .filterbar input,.filterbar select{padding:9px 12px;border-radius:8px;border:1px solid var(--panel-edge);background:#070c18;color:#fff;font-size:13px;font-family:inherit;}
+  .settings-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;}
+  .login-box{max-width:380px;margin:60px auto;padding:28px;border-radius:18px;background:linear-gradient(180deg,#101a34,#0a1020);border:1px solid var(--panel-edge);}
+  .audit-row{padding:10px 12px;background:#0b1224;border:1px solid #131c33;border-radius:8px;margin-bottom:6px;font-size:12px;}
+  .audit-row .at{color:var(--ink-dim);font-size:11px;}
+  .audit-row .act{color:var(--gold-2);font-weight:600;}
+  .num-chips{display:flex;flex-wrap:wrap;gap:3px;}
+  .num-chips .chip{font-size:11px;padding:2px 7px;}
+  .nochrome-link{color:var(--gold-2);text-decoration:none;font-size:12px;}
+  .right{text-align:right;}
+</style>
+</head>
+<body>
+<div class="admin-wrap">
+
+  <div id="loginView">
+    <div class="login-box panel">
+      <h2 class="goldtext" style="margin-top:0;font-family:'Cinzel',serif;">Organiser sign in</h2>
+      <p class="sub" style="color:var(--ink-dim);font-size:13px;">Use your committee email and password.</p>
+      <div class="field"><label>Email</label><input id="loginEmail" type="email" autocomplete="username" placeholder="you@karaitivuassociation..." /></div>
+      <div class="field"><label>Password</label><input id="loginPass" type="password" autocomplete="current-password" placeholder="••••••••" /></div>
+      <div class="err" id="loginErr"></div>
+      <div class="modal-actions">
+        <button class="primary" id="loginBtn" style="flex:1;">Sign in</button>
+      </div>
+      <p style="margin-top:18px;text-align:center;"><a class="nochrome-link" href="/">← Back to raffle site</a></p>
+    </div>
+  </div>
+
+  <div id="dashView" style="display:none;">
+    <div class="topbar">
+      <h1 class="goldtext">KAUK Organiser Dashboard</h1>
+      <div class="who">Signed in as <b id="whoEmail">—</b> <span id="whoRole"></span> · <button class="ghostbtn" id="logoutBtn">Log out</button></div>
+    </div>
+
+    <div class="stat-grid">
+      <div class="astat"><div class="v" id="aConfirmed">0</div><div class="k">Confirmed</div></div>
+      <div class="astat"><div class="v" id="aPending">0</div><div class="k">Pending</div></div>
+      <div class="astat"><div class="v" id="aAvailable">500</div><div class="k">Available</div></div>
+      <div class="astat"><div class="v" id="aRaised">£0</div><div class="k">Confirmed £</div></div>
+      <div class="astat"><div class="v" id="aPipeline">£0</div><div class="k">Pending £</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" data-tab="purchases">Purchases</button>
+      <button class="tab" data-tab="settings">Settings</button>
+      <button class="tab" data-tab="users" id="usersTab" style="display:none;">Admin users</button>
+      <button class="tab" data-tab="audit">Audit log</button>
+    </div>
+
+    <!-- Purchases -->
+    <section id="tab-purchases">
+      <div class="filterbar">
+        <input id="searchBox" type="text" placeholder="Search name, ref, phone, email, number…" style="flex:1;min-width:200px;" />
+        <select id="statusFilter">
+          <option value="">All statuses</option>
+          <option value="pending">Pending</option>
+          <option value="confirmed">Confirmed</option>
+          <option value="released">Released</option>
+        </select>
+        <button class="ghostbtn" id="exportBtn">⬇ Export CSV</button>
+        <button class="ghostbtn" id="reloadBtn">↻ Reload</button>
+      </div>
+      <div id="purchasesBody"></div>
+    </section>
+
+    <!-- Settings -->
+    <section id="tab-settings" style="display:none;">
+      <h3 style="margin:6px 0 14px;color:#fff;">Site settings</h3>
+      <div class="settings-grid">
+        <div class="field"><label>Account name</label><input id="set-bank_account_name" /></div>
+        <div class="field"><label>Sort code</label><input id="set-bank_sort_code" /></div>
+        <div class="field"><label>Account number</label><input id="set-bank_account_no" /></div>
+        <div class="field"><label>Committee WhatsApp 1</label><input id="set-contact_whatsapp_1" /></div>
+        <div class="field"><label>Committee WhatsApp 2</label><input id="set-contact_whatsapp_2" /></div>
+        <div class="field"><label>Committee email</label><input id="set-contact_email" /></div>
+        <div class="field"><label>Draw date</label><input id="set-draw_date" /></div>
+        <div class="field"><label>Draw venue</label><input id="set-draw_venue" /></div>
+        <div class="field"><label>Ticket price (£)</label><input id="set-ticket_price_gbp" type="number" min="1" /></div>
+      </div>
+      <button class="primary" id="saveSettings">Save settings</button>
+    </section>
+
+    <!-- Admin users (master only) -->
+    <section id="tab-users" style="display:none;">
+      <h3 style="margin:6px 0 14px;color:#fff;">Admin users</h3>
+      <div id="usersBody" style="margin-bottom:24px;"></div>
+      <h4 style="color:#fff;font-size:14px;">Add or update an admin</h4>
+      <p style="color:var(--ink-dim);font-size:12px;line-height:1.6;">
+        Generate a password hash on your machine first:<br/>
+        <code style="background:#070c18;padding:4px 8px;border-radius:4px;font-size:11px;">npm run hash-password -- 'their password'</code><br/>
+        Then paste the resulting <code>pbkdf2$…</code> string below.
+      </p>
+      <div class="settings-grid">
+        <div class="field"><label>Email</label><input id="newUserEmail" type="email" placeholder="person@example.com" /></div>
+        <div class="field"><label>Role</label>
+          <select id="newUserRole">
+            <option value="committee">Committee</option>
+            <option value="master">Master</option>
+          </select>
+        </div>
+        <div class="field" style="grid-column:1 / -1;"><label>Password hash (pbkdf2$…)</label><input id="newUserHash" type="text" placeholder="pbkdf2$200000$…" /></div>
+      </div>
+      <button class="primary" id="addUserBtn">Save user</button>
+    </section>
+
+    <!-- Audit log -->
+    <section id="tab-audit" style="display:none;">
+      <h3 style="margin:6px 0 14px;color:#fff;">Audit log (last 200 events)</h3>
+      <div id="auditBody"></div>
+    </section>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/admin.js"></script>
+</body>
+</html>

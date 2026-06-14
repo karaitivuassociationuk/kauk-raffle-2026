@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KAUK Unity Coin Raffle 2026</title>
+<meta name="description" content="Karaitivu Association UK — 500 ticket raffle. Win gold coins. Draw 20 June 2026, Oxford. UK residents only." />
+<link rel="icon" href="/assets/logo.svg" type="image/svg+xml" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Cinzel:wght@600;700;900&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+<div class="wrap">
+
+  <header class="hero">
+    <img class="logoimg" src="/assets/logo.svg" alt="KAUK logo" />
+    <h1 class="title goldtext">KAUK<span class="line2">UNITY COIN</span><span class="line3">RAFFLE 2026</span></h1>
+    <div class="ribbon">Support KAUK Unity &nbsp;•&nbsp; Win Gold &nbsp;•&nbsp; Make a Difference</div>
+  </header>
+
+  <section class="panel infostrip">
+    <div class="price">
+      <span class="amt goldtext" id="priceAmt">£10</span>
+      <span class="lbl">PER NUMBER</span>
+    </div>
+    <div>
+      <div class="info-k">Draw Date</div>
+      <div class="info-v"><span class="accent" id="drawDate">20 June 2026</span></div>
+      <div class="info-sub">Saturday</div>
+    </div>
+    <div>
+      <div class="info-k">Venue</div>
+      <div class="info-v" id="drawVenueLine1">World Tamil Historical Centre</div>
+      <div class="info-sub" id="drawVenueLine2">Oxford, United Kingdom</div>
+    </div>
+  </section>
+
+  <h2 class="sec-title goldtext">Amazing Gold Prizes To Be Won!</h2>
+  <section class="prizes">
+    <div class="prize panel"><div class="medal m1">1</div><div class="g goldtext">8g</div>
+      <div class="pl">Fine Gold Coin</div><div class="ps">999.9 GOLD</div></div>
+    <div class="prize panel"><div class="medal m2">2</div><div class="g goldtext">4g</div>
+      <div class="pl">Fine Gold Coin</div><div class="ps">999.9 GOLD</div></div>
+    <div class="prize panel"><div class="medal m3">3</div><div class="g goldtext">2g</div>
+      <div class="pl">Fine Gold Coin</div><div class="ps">999.9 GOLD</div></div>
+  </section>
+
+  <h2 class="sec-title goldtext">Choose Your Lucky Number!</h2>
+  <div class="legend">
+    <span><i class="swatch sw-av"></i>Available</span>
+    <span><i class="swatch sw-se"></i>Selected</span>
+    <span><i class="swatch sw-pe"></i>Awaiting payment</span>
+    <span><i class="swatch sw-co"></i>Confirmed (sold)</span>
+  </div>
+
+  <section class="panel board">
+    <div class="board-toolbar">
+      <div class="stat-pills">
+        <span class="pill">Available <b id="stat-av">500</b></span>
+        <span class="pill">Pending <b id="stat-pe">0</b></span>
+        <span class="pill">Confirmed <b id="stat-co">0</b></span>
+      </div>
+      <button class="ghostbtn" id="refreshBtn">↻ Refresh board</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <h2 class="sec-title goldtext">How To Play</h2>
+  <section class="how">
+    <div class="step panel"><div class="n">1</div><h4>Choose your numbers</h4>
+      <p>Tap any green number to select it. Pick as many as you like — each is £10.</p></div>
+    <div class="step panel"><div class="n">2</div><h4>Enter details &amp; pay</h4>
+      <p>Provide your name, mobile, email and UK postcode. Pay by bank transfer or arrange cash with the committee using your reference code.</p></div>
+    <div class="step panel"><div class="n">3</div><h4>Confirm with the committee</h4>
+      <p>Message a committee member on WhatsApp or email with your reference. Once verified, your numbers are entered into the draw.</p></div>
+  </section>
+
+  <section class="panel tc">
+    <h3>Terms &amp; Conditions</h3>
+    <ul>
+      <li><b>UK residents only.</b> By purchasing you confirm you currently live in the United Kingdom.</li>
+      <li>Each ticket costs <b>£10</b>. 500 tickets total.</li>
+      <li>Numbers are held against your name as soon as you complete the purchase form. <b>You must then confirm your payment</b> with a committee member by WhatsApp or email.</li>
+      <li>If payment is not confirmed by the committee, your numbers will <b>not</b> be entered into the draw.</li>
+      <li>Numbers can be released back to the pool only at the buyer's request (contact the committee) or by committee decision.</li>
+      <li>The draw will take place on the date and venue shown above. Winners will be contacted by email and WhatsApp/SMS.</li>
+      <li>All proceeds support Karaitivu Association UK.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <div class="thanks">Thank You For Supporting KAUK Unity</div>
+    <div class="luck">Good Luck To Everyone! 🍀</div>
+    <div class="adminlink"><a href="/admin.html">Organiser login</a></div>
+  </footer>
+</div>
+
+<div class="selbar" id="selbar">
+  <div class="selbar-in">
+    <div class="meta"><b id="selCount">0</b> numbers selected &nbsp;·&nbsp; <span class="total" id="selTotal">£0</span></div>
+    <button class="primary" id="buyBtn">Buy these numbers</button>
+  </div>
+</div>
+
+<div class="overlay" id="buyModal">
+  <div class="modal">
+    <h3 class="goldtext">Complete your purchase</h3>
+    <p class="sub">Your numbers will be held with your name immediately. Pay by bank transfer or cash, then confirm with the committee.</p>
+    <div class="chips" id="modalChips"></div>
+    <div class="field"><label>Full name</label><input id="fName" type="text" autocomplete="name" placeholder="e.g. Priya Kandiah"></div>
+    <div class="field"><label>Mobile number (for WhatsApp &amp; SMS)</label><input id="fPhone" type="tel" autocomplete="tel" placeholder="e.g. +44 7700 900123"></div>
+    <div class="field"><label>Email</label><input id="fEmail" type="email" autocomplete="email" placeholder="e.g. priya@email.com"></div>
+    <div class="field"><label>UK postcode</label><input id="fPostcode" type="text" autocomplete="postal-code" placeholder="e.g. OX1 2JD" maxlength="10"></div>
+    <div class="field">
+      <label>Payment method</label>
+      <select id="fChannel">
+        <option value="bank">Bank transfer</option>
+        <option value="cash">Cash (arrange with committee)</option>
+      </select>
+    </div>
+    <div class="field checkbox">
+      <input id="fUK" type="checkbox" />
+      <label for="fUK">I confirm I am a UK resident and have read the terms &amp; conditions.</label>
+    </div>
+    <div class="err" id="formErr"></div>
+    <div class="modal-actions">
+      <button class="primary" id="confirmBuy">Confirm purchase</button>
+      <button class="ghostbtn" id="cancelBuy">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="successModal">
+  <div class="modal">
+    <h3 class="goldtext">Numbers held ✓</h3>
+    <p class="sub">Please complete payment and confirm with the committee. Your numbers are entered into the draw once we verify your payment.</p>
+    <div class="chips" id="confChips"></div>
+    <div class="bankbox" id="bankBox">
+      <h4>Bank transfer</h4>
+      <div class="bankrow"><span class="k">Account name</span><span class="v" id="bankName">—</span></div>
+      <div class="bankrow"><span class="k">Sort code</span><span class="v" id="bankSort">—</span></div>
+      <div class="bankrow"><span class="k">Account number</span><span class="v" id="bankNo">—</span></div>
+      <div class="bankrow"><span class="k">Amount</span><span class="v" id="confAmount">£0</span></div>
+      <div class="bankrow"><span class="k">Payment reference</span><span class="v refcode" id="confRef">—</span></div>
+    </div>
+    <div class="notebox">
+      <b>Next step:</b> message the committee with your reference to confirm payment.<br/><br/>
+      <span id="contactLinks"></span>
+    </div>
+    <div class="modal-actions" style="margin-top:16px;">
+      <button class="primary" id="successDone">Done</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="/app.js"></script>
+</body>
+</html>

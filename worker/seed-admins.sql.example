@@ -1,0 +1,7 @@
+-- Copy to seed-admins.sql, fill in real password hashes, then run:
+--   wrangler d1 execute kauk_raffle --remote --file=./worker/seed-admins.sql
+-- Generate a hash with: npm run hash-password -- 'your-strong-password'
+
+INSERT OR REPLACE INTO admins (email, password_hash, role) VALUES
+  ('gopinaath.ruthran@gmail.com',     'PASTE_HASH_HERE', 'master'),
+  ('karaitivuassociationuk@gmail.com','PASTE_HASH_HERE', 'committee');
